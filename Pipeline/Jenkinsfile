@@ -5,7 +5,11 @@ pipeline {
         jdk 'jdk'
     }
     stages {
-
+        stage('Prepare SCM') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Kyusuf186/java-maven-junit-helloworld.git'
+            }
+        }
         stage ('Build') {
             steps {
                 bat 'mvn -Dmaven.test.failure.ignore=true install'
