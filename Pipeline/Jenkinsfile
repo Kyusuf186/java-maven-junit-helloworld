@@ -14,12 +14,13 @@ pipeline {
             steps {
                 bat 'mvn -Dmaven.test.failure.ignore=true install'
             }
-            post {
-                success {
-                    junit 'target/surefire-reports/**/*.war' 
-                }
-            }
-        }
+           	post{
+			success{
+			    echo "Archiveing the Artifacts"
+			    archiveArtifacts artifacts: '/**/target/*.war'
+				}
+                    }
+           }
         stage("deploy"){
 				steps{
 					deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:9090/')], contextPath: null, war: '**/*.war'
