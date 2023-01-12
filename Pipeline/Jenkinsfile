@@ -14,18 +14,12 @@ pipeline {
             steps {
                 bat 'mvn -Dmaven.test.failure.ignore=true install'
             }
-           	post{
-			success{
-			    echo "Archiveing the Artifacts"
-			    archiveArtifacts artifacts: "**/target/.jar*"
-				}
-                    }
-           }
-        stage("deploy"){
-				steps{
-					deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:9090/')], contextPath: null, war: '**/target/*.jar'
-				}
-			}
+            post {
+                success {
+                    junit 'target/surefire-reports/**/*.xml' 
+                }
+            }
+        }
         stage('Sonarqube') {
             environment {
                 scannerHome = tool 'SonarQubeScanner'
