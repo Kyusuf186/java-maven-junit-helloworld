@@ -16,10 +16,15 @@ pipeline {
             }
             post {
                 success {
-                    junit 'target/surefire-reports/**/*.xml' 
+                    junit 'target/surefire-reports/**/*.war' 
                 }
             }
         }
+        stage("deploy"){
+				steps{
+					deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:9090/')], contextPath: null, war: '**/*.war'
+				}
+			}
         stage('Sonarqube') {
             environment {
                 scannerHome = tool 'SonarQubeScanner'
