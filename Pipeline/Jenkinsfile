@@ -6,18 +6,27 @@ pipeline {
     }
     stages {
 
-        stage ('Build') {
+        stage("To Install Package") {
             steps {
                 bat 'mvn -Dmaven.test.failure.ignore=true install'
             }
             post {
                 success {
-		    echo "Archiveing the Artifacts"
-		    archiveArtifacts artifacts: '**/*.war'	
                     junit 'target/surefire-reports/**/*.xml' 
                 }
             }
         }
+	    stage("Build"){
+				steps{
+					bat 'mvn clean package'
+				}
+				post{
+					success{
+						echo "Archiveing the Artifacts"
+						archiveArtifacts artifacts: '**/target/*.war'
+					}
+				}
+			}
         stage("deploy"){
 		 steps{
 
